@@ -5,12 +5,12 @@ using Models.Core.Models;
 
 namespace DataAccess.EF
 {
-    public class AppDbContext (DbContextOptions options) : IdentityDbContext<User> (options)
+    public class AppDbContext (DbContextOptions options) : IdentityDbContext<AppUser> (options)
     {
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<User>()
+            builder.Entity<AppUser>()
                 .ToTable("User", "Security");
             builder.Entity<IdentityRole>()
                 .ToTable("Role", "Security");

@@ -1,6 +1,6 @@
 
 using DataAccess.EF;
-
+using Microsoft.AspNetCore.Identity;
 using Models.Core.Models;
 
 namespace Identity
@@ -21,9 +21,13 @@ namespace Identity
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConntection"))
             );
             builder.Services
-                .AddIdentityApiEndpoints<User>()
+                .AddIdentityApiEndpoints<AppUser>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
+            //builder.Services
+            //    .AddIdentityCore<User>()
+            //    .AddEntityFrameworkStores<AppDbContext>()
+            //    .AddApiEndpoints();
 
             var app = builder.Build();
 
@@ -35,8 +39,12 @@ namespace Identity
             }
 
             app.UseAuthorization();
+            app.Map("/logout", async(SignInManager < AppUser > signInManager) =>
+            {
+                await signInManager.SignOutAsync().ConfigureAwait(false);
+            }).RequireAuthorization();
+            app.MapCustomIdentityApi<AppUser>();
 
-            app.MapIdentityApi<User>();
 
             app.MapControllers();
 
