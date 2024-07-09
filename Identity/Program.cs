@@ -1,5 +1,7 @@
 
-using Identity.Data;
+using DataAccess.EF;
+
+using Models.Core.Models;
 
 namespace Identity
 {
@@ -15,12 +17,12 @@ namespace Identity
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddDbContext<ApplicationDbContext>(options => 
+            builder.Services.AddDbContext<AppDbContext>(options => 
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConntection"))
             );
             builder.Services
-                .AddIdentityApiEndpoints<IdentityUser>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddIdentityApiEndpoints<User>()
+                .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 
             var app = builder.Build();
@@ -34,7 +36,7 @@ namespace Identity
 
             app.UseAuthorization();
 
-            app.MapIdentityApi<IdentityUser>();
+            app.MapIdentityApi<User>();
 
             app.MapControllers();
 
