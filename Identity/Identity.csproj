@@ -18,11 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DataAccess.EF\DataAccess.EF.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
+    <ProjectReference Include="..\DataAccess.EF\Identity.DAL.csproj" />
   </ItemGroup>
 
 </Project>

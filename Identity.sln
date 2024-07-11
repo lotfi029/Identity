@@ -5,9 +5,9 @@ VisualStudioVersion = 17.9.34616.47
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity", "Identity\Identity.csproj", "{0053F2C5-798C-4690-8A5C-694AC0025076}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess.EF", "DataAccess.EF\DataAccess.EF.csproj", "{710E8CD0-4C21-4C4F-BA74-15A7488967A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity.DAL", "DataAccess.EF\Identity.DAL.csproj", "{710E8CD0-4C21-4C4F-BA74-15A7488967A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models.Core", "Models.Core\Models.Core.csproj", "{4C8DE5F3-EDD6-43F0-8702-767591CDC984}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity.BLL", "Models.Core\Identity.BLL.csproj", "{4C8DE5F3-EDD6-43F0-8702-767591CDC984}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

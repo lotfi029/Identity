@@ -25,11 +25,10 @@ namespace Microsoft.AspNetCore.Routing;
 /// <summary>
 /// Provides extension methods for <see cref="IEndpointRouteBuilder"/> to add identity endpoints.
 /// </summary>
-public static class IdentityApiEndpointRouteBuilderExtensions
+public static class IdentityApiEndpointRouteBuilderExtensions 
 {
     // Validate the email address using DataAnnotations like the UserValidator does when RequireUniqueEmail = true.
     private static readonly EmailAddressAttribute _emailAddressAttribute = new();
-
     /// <summary>
     /// Add endpoints for registering, logging in, and logging out using ASP.NET Core Identity.
     /// </summary>
@@ -57,7 +56,7 @@ public static class IdentityApiEndpointRouteBuilderExtensions
         // NOTE: We cannot inject UserManager<TUser> directly because the TUser generic parameter is currently unsupported by RDG.
         // https://github.com/dotnet/aspnetcore/issues/47338
         routeGroup.MapPost("/register", async Task<Results<Ok, ValidationProblem>>
-            ([FromBody] RegisterDTO registration, HttpContext context, [FromServices] IServiceProvider sp) =>
+            ([FromBody] UserDTO registration, HttpContext context, [FromServices] IServiceProvider sp) =>
         {
             var userManager = sp.GetRequiredService<UserManager<TUser>>();
 
@@ -69,6 +68,7 @@ public static class IdentityApiEndpointRouteBuilderExtensions
             var userStore = sp.GetRequiredService<IUserStore<TUser>>();
             var emailStore = (IUserEmailStore<TUser>)userStore;
             var email = registration.Email;
+            
 
             if (string.IsNullOrEmpty(email) || !_emailAddressAttribute.IsValid(email))
             {
@@ -78,9 +78,11 @@ public static class IdentityApiEndpointRouteBuilderExtensions
             var user = new TUser() 
             {
                 Email = registration.Email,
+                UserName = registration.UserName,
                 FirstName = registration.FirstName,
                 LastName = registration.LastName,
-                PasswordHash = registration.Password
+                PasswordHash = registration.Password,
+                Image = registration.Image
             };
             await userStore.SetUserNameAsync(user, email, CancellationToken.None);
             await emailStore.SetEmailAsync(user, email, CancellationToken.None);
@@ -99,12 +101,15 @@ public static class IdentityApiEndpointRouteBuilderExtensions
             ([FromBody] LoginRequest login, [FromQuery] bool? useCookies, [FromQuery] bool? useSessionCookies, [FromServices] IServiceProvider sp) =>
         {
             var signInManager = sp.GetRequiredService<SignInManager<TUser>>();
+            var userManager = sp.GetRequiredService<UserManager<TUser>>();
 
+            string? username = new EmailAddressAttribute().IsValid(login.Email) ? userManager.FindByEmailAsync(login.Email).Result.UserName : login.Email;
+            
             var useCookieScheme = (useCookies == true) || (useSessionCookies == true);
             var isPersistent = (useCookies == true) && (useSessionCookies != true);
             signInManager.AuthenticationScheme = useCookieScheme ? IdentityConstants.ApplicationScheme : IdentityConstants.BearerScheme;
 
-            var result = await signInManager.PasswordSignInAsync(login.Email, login.Password, isPersistent, lockoutOnFailure: true);
+            var result = await signInManager.PasswordSignInAsync(username, login.Password, isPersistent, lockoutOnFailure: true);
 
             if (result.RequiresTwoFactor)
             {

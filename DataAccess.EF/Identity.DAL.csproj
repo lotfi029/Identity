@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Models.Core\Models.Core.csproj" />
+    <ProjectReference Include="..\Models.Core\Identity.BLL.csproj" />
   </ItemGroup>
 
 </Project>

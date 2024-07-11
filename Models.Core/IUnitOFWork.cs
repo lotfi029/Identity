@@ -1,7 +1,13 @@
-﻿namespace Models.Core
+﻿using Models.Core.Repositories;
+
+namespace Models.Core
 {
-    public class IUnitOFWork
+    public interface IUnitOFWork : IDisposable
     {
+        
+        IAuthorRepository Author { get; }
+        IBookRepository Book { get; }
+        int Save();
 
     }
 }

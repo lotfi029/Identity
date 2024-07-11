@@ -10,6 +10,12 @@ namespace Models.Core.DTO
     public class UserDTO
     {
         [MaxLength(100)]
+        public string? FirstName { get; set; }
+        [MaxLength(100)]
+        public string? LastName { get; set; }
+        [EmailAddress]
+        public string? Email { get; set; }
+        [MaxLength(100)]
         public string UserName { get; set; }
         [DataType(DataType.Password)]
         public string Password { get; set; }
@@ -17,6 +23,7 @@ namespace Models.Core.DTO
         [Compare("Password")]
         public string ConfirmPassword { get; set; }
         public string Address { get; set; }
+        public byte[] Image { get; set; }
 
     }
 }

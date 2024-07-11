@@ -1,7 +1,10 @@
 
 using DataAccess.EF;
+using DataAccess.EF.Repositories;
 using Microsoft.AspNetCore.Identity;
+using Models.Core;
 using Models.Core.Models;
+using Models.Core.Repositories;
 
 namespace Identity
 {
@@ -17,13 +20,20 @@ namespace Identity
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddDbContext<AppDbContext>(options => 
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConntection"))
+            builder.Services.AddDbContext<AppDbContext>(options => {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConntection"),
+                b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName));
+                }
             );
+            builder.Services.AddScoped(typeof(IUnitOFWork), typeof(UnitOfWork));
+            
+            //builder.Services.AddTransient<IUnitOFWork, UnitOfWork>();
             builder.Services
                 .AddIdentityApiEndpoints<AppUser>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
+            
+
             //builder.Services
             //    .AddIdentityCore<User>()
             //    .AddEntityFrameworkStores<AppDbContext>()
@@ -39,12 +49,12 @@ namespace Identity
             }
 
             app.UseAuthorization();
-            app.Map("/logout", async(SignInManager < AppUser > signInManager) =>
-            {
-                await signInManager.SignOutAsync().ConfigureAwait(false);
-            }).RequireAuthorization();
+            //app.Map("/logout", async(SignInManager < AppUser > signInManager) =>
+            //{
+            //    await signInManager.SignOutAsync().ConfigureAwait(false);
+            //}).RequireAuthorization();
             app.MapCustomIdentityApi<AppUser>();
-
+            //app.MapIdentityApi<AppUser>();
 
             app.MapControllers();
 

@@ -7,6 +7,8 @@ namespace DataAccess.EF
 {
     public class AppDbContext (DbContextOptions options) : IdentityDbContext<AppUser> (options)
     {
+        public DbSet<Book> Books { get; set; }
+        public DbSet<Author> Authors { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -24,7 +26,13 @@ namespace DataAccess.EF
                 .ToTable("UserTokens", "Security");
             builder.Entity<IdentityRoleClaim<string>>()
                 .ToTable("RoleClaims", "Security");
-
+            builder.Entity<Author>(entity =>
+            {
+                entity.Property(e => e.AuthorId)
+                    .IsRequired()
+                    .HasDefaultValue(new Guid().ToString());
+            });
+                
         }
     }
 }
